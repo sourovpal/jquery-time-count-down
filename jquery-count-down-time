@@ -1,0 +1,44 @@
+
+// $('#demo').countDownTime({
+//     duration: '11 Feb 2099 10:18:00',
+//     timezone: 'Asia/Dhaka',
+// });
+{/* <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script> */}
+
+(function($) {
+    $.fn.countDownTime = function(opt) {
+        var defaults = $.extend({
+            select: 4,
+            error: null,
+            duration: null,
+            timezone: null,
+        }, opt);
+        return this.each(function() {
+            var ele = $(this);
+            ele.append(
+                '<div class="count_down_click" style="font-size: 16px;font-family: sans-serif;font-weight: 400;color: green;">0d 0h 0m 0s</div>'
+            );
+            var x = setInterval(function() {
+                var time = new Date().getTime();
+                if (defaults.timezone) {
+                    time.toLocaleString('en-US', {
+                        timeZone: defaults.timezone
+                    })
+                }
+                var distance = (Date.parse(defaults.duration) - time);
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                var countTime = days + "d " + hours + "h " +
+                    minutes + "m " + seconds + "s ";
+                ele.find('.count_down_click').html(countTime);
+                if (distance < 0) {
+                    clearInterval(x);
+                    ele.find('.count_down_click').css('color', 'red');
+                    ele.find('.count_down_click').html("0d 0h 0m 0s");
+                }
+            }, 1000);
+        });
+    }
+})(jQuery);
